@@ -63,7 +63,7 @@ class XmlProcessingServiceTests {
 
 		assertThat(response.documentName()).isEqualTo("example.xml");
 		assertThat(response.status()).isEqualTo(ProcessingStatus.REJECTED);
-		assertThat(response.diagnostic()).isEqualTo("XML is not well-formed.");
+		assertThat(response.diagnostic()).isEqualTo("XML does not conform to the judgment schema.");
 		assertThat(response.normalizedJson()).isNull();
 		assertThat(artifactStore.findAll()).isEmpty();
 	}
