@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InMemoryPublishedArtifactStore {
+public class InMemoryArtifactStore {
 
 	private final ConcurrentMap<String, PublishedArtifact> artifacts = new ConcurrentHashMap<>();
 

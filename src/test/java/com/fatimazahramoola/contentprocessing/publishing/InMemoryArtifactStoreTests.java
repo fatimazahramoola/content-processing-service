@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
-class InMemoryPublishedArtifactStoreTests {
+class InMemoryArtifactStoreTests {
 
-	private final InMemoryPublishedArtifactStore store = new InMemoryPublishedArtifactStore();
+	private final InMemoryArtifactStore store = new InMemoryArtifactStore();
 
 	@Test
 	void savesAndFindsArtifactByContentId() {
