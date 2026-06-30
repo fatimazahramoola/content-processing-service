@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 public class XmlProcessingService implements ProcessingService {
 
 	private final XmlValidator xmlValidator;
+	private final XsltTransformer xsltTransformer;
 
-	public XmlProcessingService(XmlValidator xmlValidator) {
+	public XmlProcessingService(XmlValidator xmlValidator, XsltTransformer xsltTransformer) {
 		this.xmlValidator = xmlValidator;
+		this.xsltTransformer = xsltTransformer;
 	}
 
 	@Override
@@ -21,11 +23,13 @@ public class XmlProcessingService implements ProcessingService {
 				.map(diagnostic -> new XmlProcessingResponse(
 						request.documentName(),
 						ProcessingStatus.REJECTED,
-						diagnostic))
+						diagnostic,
+						null))
 				.orElseGet(() -> new XmlProcessingResponse(
 						request.documentName(),
 						ProcessingStatus.ACCEPTED,
-						null));
+						null,
+						xsltTransformer.transform(request.xml())));
 	}
 
 }
