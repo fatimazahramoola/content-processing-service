@@ -17,6 +17,11 @@ public class InMemoryArtifactStore {
 		return artifact;
 	}
 
+	public PublishedArtifact saveIfAbsent(PublishedArtifact artifact) {
+		PublishedArtifact existingArtifact = artifacts.putIfAbsent(artifact.contentId(), artifact);
+		return existingArtifact == null ? artifact : existingArtifact;
+	}
+
 	public Optional<PublishedArtifact> findByContentId(String contentId) {
 		return Optional.ofNullable(artifacts.get(contentId));
 	}

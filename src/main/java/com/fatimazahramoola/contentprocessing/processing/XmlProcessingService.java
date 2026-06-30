@@ -55,7 +55,7 @@ public class XmlProcessingService implements ProcessingService {
 
 	private XmlProcessingResponse processValidXml(XmlProcessingRequest request) {
 		String normalizedJson = xsltTransformer.transform(request.xml());
-		artifactStore.save(new PublishedArtifact(
+		artifactStore.saveIfAbsent(new PublishedArtifact(
 				xmlMetadataExtractor.contentId(request.xml()),
 				request.documentName(),
 				normalizedJson,
