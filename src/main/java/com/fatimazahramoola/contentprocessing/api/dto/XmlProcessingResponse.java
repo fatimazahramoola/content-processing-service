@@ -4,5 +4,6 @@ import com.fatimazahramoola.contentprocessing.api.ProcessingStatus;
 
 public record XmlProcessingResponse(
 		String documentName,
-		ProcessingStatus status) {
+		ProcessingStatus status,
+		String diagnostic) {
 }
