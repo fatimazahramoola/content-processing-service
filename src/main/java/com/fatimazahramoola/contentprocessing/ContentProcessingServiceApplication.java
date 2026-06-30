@@ -1,0 +1,13 @@
+package com.fatimazahramoola.contentprocessing;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ContentProcessingServiceApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ContentProcessingServiceApplication.class, args);
+	}
+
+}
