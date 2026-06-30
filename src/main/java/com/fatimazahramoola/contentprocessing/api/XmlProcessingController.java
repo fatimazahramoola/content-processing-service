@@ -1,10 +1,13 @@
 package com.fatimazahramoola.contentprocessing.api;
 
+import com.fatimazahramoola.contentprocessing.api.dto.XmlBatchProcessingRequest;
+import com.fatimazahramoola.contentprocessing.api.dto.XmlBatchProcessingResponse;
 import com.fatimazahramoola.contentprocessing.api.dto.XmlProcessingRequest;
 import com.fatimazahramoola.contentprocessing.api.dto.XmlProcessingResponse;
 import com.fatimazahramoola.contentprocessing.publishing.InMemoryArtifactStore;
 import com.fatimazahramoola.contentprocessing.publishing.PublishedArtifact;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +34,15 @@ public class XmlProcessingController {
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public XmlProcessingResponse process(@Valid @RequestBody XmlProcessingRequest request) {
 		return processingService.process(request);
+	}
+
+	@PostMapping("/batch")
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	public XmlBatchProcessingResponse processBatch(@Valid @RequestBody XmlBatchProcessingRequest request) {
+		List<XmlProcessingResponse> results = request.documents().stream()
+				.map(processingService::process)
+				.toList();
+		return new XmlBatchProcessingResponse(results);
 	}
 
 	@GetMapping("/{contentId}")
