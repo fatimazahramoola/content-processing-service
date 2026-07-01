@@ -1,3 +1,7 @@
 spring:
   application:
     name: content-processing-service
+
+content-processing:
+  batch:
+    concurrency: 4
