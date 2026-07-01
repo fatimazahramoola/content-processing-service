@@ -1,15 +1,17 @@
 package com.fatimazahramoola.contentprocessing.processing;
 
+import java.time.Clock;
+import java.time.Instant;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.fatimazahramoola.contentprocessing.api.ProcessingService;
 import com.fatimazahramoola.contentprocessing.api.ProcessingStatus;
 import com.fatimazahramoola.contentprocessing.api.dto.XmlProcessingRequest;
 import com.fatimazahramoola.contentprocessing.api.dto.XmlProcessingResponse;
 import com.fatimazahramoola.contentprocessing.publishing.InMemoryArtifactStore;
 import com.fatimazahramoola.contentprocessing.publishing.PublishedArtifact;
-import java.time.Clock;
-import java.time.Instant;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class XmlProcessingService implements ProcessingService {

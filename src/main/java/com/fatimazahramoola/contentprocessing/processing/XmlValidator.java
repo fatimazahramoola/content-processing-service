@@ -2,11 +2,13 @@ package com.fatimazahramoola.contentprocessing.processing;
 
 import java.io.StringReader;
 import java.util.Optional;
+
 import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.xml.sax.ErrorHandler;

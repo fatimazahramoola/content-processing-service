@@ -6,30 +6,34 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fatimazahramoola.contentprocessing.api.dto.XmlProcessingResponse;
-import com.fatimazahramoola.contentprocessing.publishing.InMemoryArtifactStore;
-import com.fatimazahramoola.contentprocessing.publishing.PublishedArtifact;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fatimazahramoola.contentprocessing.api.dto.XmlProcessingResponse;
+import com.fatimazahramoola.contentprocessing.processing.XmlBatchProcessingService;
+import com.fatimazahramoola.contentprocessing.publishing.InMemoryArtifactStore;
+import com.fatimazahramoola.contentprocessing.publishing.PublishedArtifact;
+
 class XmlProcessingControllerTests {
 
     private final InMemoryArtifactStore artifactStore = new InMemoryArtifactStore();
+    private final XmlBatchProcessingService batchProcessingService = new XmlBatchProcessingService(request -> null, 1);
     private final ObjectMapper objectMapper = new ObjectMapper()
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     private final MockMvc mockMvc = MockMvcBuilders
-            .standaloneSetup(new XmlProcessingController(request -> null, artifactStore))
+            .standaloneSetup(new XmlProcessingController(request -> null, batchProcessingService, artifactStore))
             .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
             .build();
 
@@ -62,34 +66,43 @@ class XmlProcessingControllerTests {
             processedDocuments.add(request.documentName());
             return new XmlProcessingResponse(request.documentName(), ProcessingStatus.ACCEPTED, null, "{}");
         };
+        XmlBatchProcessingService batchProcessingService = new XmlBatchProcessingService(processingService, 2);
         MockMvc batchMockMvc = MockMvcBuilders
-                .standaloneSetup(new XmlProcessingController(processingService, new InMemoryArtifactStore()))
+                .standaloneSetup(new XmlProcessingController(
+                        processingService,
+                        batchProcessingService,
+                        new InMemoryArtifactStore()))
                 .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
                 .build();
 
-        batchMockMvc.perform(post("/api/v1/documents/batch")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "documents": [
+        try {
+            batchMockMvc.perform(post("/api/v1/documents/batch")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
                                     {
-                                      "documentName": "first.xml",
-                                      "xml": "<judgment />"
-                                    },
-                                    {
-                                      "documentName": "second.xml",
-                                      "xml": "<judgment />"
+                                      "documents": [
+                                        {
+                                          "documentName": "first.xml",
+                                          "xml": "<judgment />"
+                                        },
+                                        {
+                                          "documentName": "second.xml",
+                                          "xml": "<judgment />"
+                                        }
+                                      ]
                                     }
-                                  ]
-                                }
-                                """))
-                .andExpect(status().isAccepted())
-                .andExpect(jsonPath("$.results[0].documentName").value("first.xml"))
-                .andExpect(jsonPath("$.results[0].status").value("ACCEPTED"))
-                .andExpect(jsonPath("$.results[1].documentName").value("second.xml"))
-                .andExpect(jsonPath("$.results[1].status").value("ACCEPTED"));
+                                    """))
+                    .andExpect(status().isAccepted())
+                    .andExpect(jsonPath("$.results[0].documentName").value("first.xml"))
+                    .andExpect(jsonPath("$.results[0].status").value("ACCEPTED"))
+                    .andExpect(jsonPath("$.results[1].documentName").value("second.xml"))
+                    .andExpect(jsonPath("$.results[1].status").value("ACCEPTED"));
 
-        assertThat(processedDocuments).containsExactly("first.xml", "second.xml");
+            assertThat(processedDocuments).containsExactly("first.xml", "second.xml");
+        }
+        finally {
+            batchProcessingService.shutdown();
+        }
     }
 
 }

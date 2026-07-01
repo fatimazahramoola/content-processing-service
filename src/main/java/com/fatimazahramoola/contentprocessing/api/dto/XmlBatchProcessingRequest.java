@@ -1,8 +1,9 @@
 package com.fatimazahramoola.contentprocessing.api.dto;
 
+import java.util.List;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import java.util.List;
 
 public record XmlBatchProcessingRequest(
 		@NotEmpty List<@Valid XmlProcessingRequest> documents) {
