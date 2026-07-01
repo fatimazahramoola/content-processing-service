@@ -1,0 +1,4 @@
+{
+  "documentName": "judgment.xml",
+  "xml": "<judgment xmlns=\"urn:lex:content:1\"><header><content_id>za-gp-2024-001</content_id><title>Moola v Minister of Documents</title><court>High Court of South Africa</court><jurisdiction>ZA-GP</jurisdiction><decision_date>2024-05-17</decision_date><citations><citation type=\"neutral\">[2024] ZAGP 1</citation><citation type=\"reporter\">2024 (1) SA 100 (GP)</citation></citations><parties><party role=\"applicant\">Fatima Moola</party><party role=\"respondent\">Minister of Documents</party></parties></header><body><section type=\"facts\"><p id=\"p1\">This is the first paragraph.</p></section><section type=\"reasons\"><p id=\"p2\">This is the second paragraph.</p></section></body></judgment>"
+}
