@@ -31,13 +31,15 @@ Responsible for the document pipeline.
 ```
 XML
     ↓
-Validate
+XSD Validation
     ↓
-Transform
+XSLT Transformation
     ↓
-Extract metadata
+Metadata Extraction
     ↓
-Publish
+Artifact Publishing
+    ↓
+Retrieval by contentId
 ```
 
 Responsibilities are intentionally separated:
