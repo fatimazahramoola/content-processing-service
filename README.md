@@ -46,6 +46,10 @@ XSLT Transformation
 Metadata Extraction
    │
    ▼
+Artifact Publishing
+   │
+   ▼
+Retrieval by contentId
 ```
 
 ---
@@ -56,7 +60,7 @@ Metadata Extraction
 
 Ensure the following are installed:
 
-- Java 17+ (tested with Java 21)
+- Java 21
 - Git
 - Postman (or another HTTP client) for exercising the REST API
 
@@ -211,6 +215,12 @@ Expected:
 A list of available runtime metrics.
 
 ### Verify the Docker packaging (optional)
+
+Stop the locally running Spring Boot application first:
+
+```bash
+Ctrl+C
+```
 
 Build the Docker image:
 
