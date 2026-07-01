@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -61,7 +62,7 @@ class XmlProcessingControllerTests {
 
     @Test
     void processesBatchDocumentsUsingProcessingService() throws Exception {
-        List<String> processedDocuments = new ArrayList<>();
+        List<String> processedDocuments = new CopyOnWriteArrayList<>();
         ProcessingService processingService = request -> {
             processedDocuments.add(request.documentName());
             return new XmlProcessingResponse(request.documentName(), ProcessingStatus.ACCEPTED, null, "{}");
