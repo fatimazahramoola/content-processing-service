@@ -20,6 +20,10 @@ import com.fatimazahramoola.contentprocessing.publishing.PublishedArtifact;
 
 import jakarta.validation.Valid;
 
+/**
+ * REST API for submitting XML documents and retrieving published artifacts.
+ * The controller keeps HTTP concerns separate from processing and storage behaviour.
+ */
 @RestController
 @RequestMapping("/api/v1/documents")
 public class XmlProcessingController {
@@ -37,18 +41,27 @@ public class XmlProcessingController {
 		this.artifactStore = artifactStore;
 	}
 
+	/**
+	 * Processes a single XML document using the shared processing pipeline.
+	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public XmlProcessingResponse process(@Valid @RequestBody XmlProcessingRequest request) {
 		return processingService.process(request);
 	}
 
+	/**
+	 * Processes multiple XML documents while preserving response order relative to the request.
+	 */
 	@PostMapping("/batch")
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public XmlBatchProcessingResponse processBatch(@Valid @RequestBody XmlBatchProcessingRequest request) {
 		return batchProcessingService.process(request);
 	}
 
+	/**
+	 * Retrieves a previously published artifact by content identifier.
+	 */
 	@GetMapping("/{contentId}")
 	public ResponseEntity<PublishedArtifact> findPublishedArtifact(@PathVariable String contentId) {
 		return artifactStore.findByContentId(contentId)

@@ -11,6 +11,9 @@ import net.sf.saxon.s9api.XsltExecutable;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+/**
+ * Transforms schema-valid XML into normalized JSON using the bundled Saxon XSLT stylesheet.
+ */
 @Component
 public class XsltTransformer {
 
@@ -22,6 +25,7 @@ public class XsltTransformer {
 	public XsltTransformer() {
 		try {
 			this.processor = new Processor(false);
+			// Compiling once avoids reparsing the stylesheet for every document.
 			this.stylesheet = processor.newXsltCompiler()
 					.compile(new StreamSource(new ClassPathResource(STYLESHEET_PATH).getInputStream()));
 		}
@@ -30,10 +34,14 @@ public class XsltTransformer {
 		}
 	}
 
+	/**
+	 * Executes the normalization stylesheet and returns the JSON serialized by Saxon.
+	 */
 	public String transform(String xml) {
 		try {
 			StringWriter output = new StringWriter();
 			Serializer serializer = processor.newSerializer(output);
+			// A loaded transformer is per-use; the compiled stylesheet can be reused safely.
 			Xslt30Transformer transformer = stylesheet.load30();
 			transformer.transform(new StreamSource(new StringReader(xml)), serializer);
 			return output.toString();

@@ -13,6 +13,10 @@ import com.fatimazahramoola.contentprocessing.api.dto.XmlProcessingResponse;
 import com.fatimazahramoola.contentprocessing.publishing.InMemoryArtifactStore;
 import com.fatimazahramoola.contentprocessing.publishing.PublishedArtifact;
 
+/**
+ * Coordinates the XML processing pipeline for a single document.
+ * Validation, transformation, metadata extraction and publishing stay in dedicated components.
+ */
 @Service
 public class XmlProcessingService implements ProcessingService {
 
@@ -44,6 +48,10 @@ public class XmlProcessingService implements ProcessingService {
 		this.clock = clock;
 	}
 
+	/**
+	 * Validates the XML before transformation and publishing.
+	 * Invalid documents return a rejected response and do not produce published artifacts.
+	 */
 	@Override
 	public XmlProcessingResponse process(XmlProcessingRequest request) {
 		return xmlValidator.validate(request.xml())
@@ -57,6 +65,7 @@ public class XmlProcessingService implements ProcessingService {
 
 	private XmlProcessingResponse processValidXml(XmlProcessingRequest request) {
 		String normalizedJson = xsltTransformer.transform(request.xml());
+		// Metadata is read from validated XML so the service does not depend on the generated JSON shape.
 		artifactStore.saveIfAbsent(new PublishedArtifact(
 				xmlMetadataExtractor.contentId(request.xml()),
 				request.documentName(),
