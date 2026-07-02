@@ -8,11 +8,18 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.springframework.stereotype.Component;
 import org.xml.sax.InputSource;
 
+/**
+ * Reads publishing metadata from schema-valid XML.
+ * Keeping this separate from transformation avoids coupling metadata extraction to the JSON output.
+ */
 @Component
 public class XmlMetadataExtractor {
 
 	private static final String CONTENT_NAMESPACE = "urn:lex:content:1";
 
+	/**
+	 * Extracts the stable content identifier used as the artifact publishing key.
+	 */
 	public String contentId(String xml) {
 		try {
 			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();

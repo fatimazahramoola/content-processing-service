@@ -17,6 +17,10 @@ import com.fatimazahramoola.contentprocessing.api.dto.XmlProcessingResponse;
 
 import jakarta.annotation.PreDestroy;
 
+/**
+ * Coordinates concurrent processing for batch document submissions.
+ * Each document is delegated to {@link ProcessingService} so batch and single-document flows share one pipeline.
+ */
 @Service
 public class XmlBatchProcessingService {
 
@@ -27,14 +31,19 @@ public class XmlBatchProcessingService {
 			ProcessingService processingService,
 			@Value("${content-processing.batch.concurrency:4}") int concurrency) {
 		this.processingService = processingService;
+		// A fixed pool is enough for this in-process demo and keeps concurrency externally bounded.
 		this.executorService = Executors.newFixedThreadPool(Math.max(1, concurrency));
 	}
 
+	/**
+	 * Processes all batch documents concurrently and returns results in the same order as the request.
+	 */
 	public XmlBatchProcessingResponse process(XmlBatchProcessingRequest request) {
 		List<Future<XmlProcessingResponse>> futures = request.documents().stream()
 				.map(document -> executorService.submit(() -> processingService.process(document)))
 				.toList();
 
+		// Futures are consumed in submission order so concurrency does not change the response order.
 		List<XmlProcessingResponse> results = futures.stream()
 				.map(this::awaitResult)
 				.toList();
@@ -52,6 +61,9 @@ public class XmlBatchProcessingService {
 		}
 	}
 
+	/**
+	 * Stops the batch executor during application shutdown.
+	 */
 	@PreDestroy
 	public void shutdown() {
 		executorService.shutdown();

@@ -15,6 +15,10 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+/**
+ * Validates legal judgment XML against the bundled XML Schema.
+ * A successful validation is required before transformation and publishing continue.
+ */
 @Component
 public class XmlValidator {
 
@@ -35,8 +39,12 @@ public class XmlValidator {
 		}
 	}
 
+	/**
+	 * Validates the XML and returns a diagnostic when the document is malformed or schema-invalid.
+	 */
 	public Optional<String> validate(String xml) {
 		try {
+			// Validator instances are not thread-safe, so each request gets its own instance.
 			Validator validator = schema.newValidator();
 			validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 			validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");

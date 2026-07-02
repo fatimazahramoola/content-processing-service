@@ -10,10 +10,11 @@ This project was completed as part of a Senior Java Engineer technical assessmen
 
 - Java 21
 - Spring Boot 3
-- Saxon-HE (XSLT 3.0)
 - Maven
+- Saxon-HE (XSLT 3.0)
 - JUnit 5
 - Spring Boot Actuator
+- Docker
 
 ---
 
